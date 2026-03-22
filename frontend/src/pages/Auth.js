@@ -53,7 +53,7 @@ export default function Auth() {
               <Zap size={18} className="text-brand-blue" />
             </div>
             <span className="font-bold text-white text-lg">
-              Snap<span className="text-brand-blue">Text</span> AI
+              Snaplix
             </span>
           </div>
 
@@ -61,7 +61,7 @@ export default function Auth() {
             {mode === 'login' ? 'Welcome back' : 'Create account'}
           </h1>
           <p className="text-slate-400 text-sm mb-6">
-            {mode === 'login' ? 'Sign in to save your scan history' : 'Join SnapText AI today'}
+            {mode === 'login' ? 'Sign in to save your scan history' : 'Join Snaplix today'}
           </p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">

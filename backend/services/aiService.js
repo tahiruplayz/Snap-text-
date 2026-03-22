@@ -14,7 +14,7 @@ async function callOpenRouter(systemPrompt, userContent) {
       Authorization: `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
       'HTTP-Referer': 'http://localhost:3000',
-      'X-Title': 'SnapText AI',
+      'X-Title': 'Snaplix',
     },
     body: JSON.stringify({
       model,

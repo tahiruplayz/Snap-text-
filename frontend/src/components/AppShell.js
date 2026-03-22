@@ -37,7 +37,7 @@ export default function AppShell() {
           </div>
           {!collapsed && (
             <span className="font-bold text-white text-base tracking-tight whitespace-nowrap">
-              Snap<span className="text-brand-blue">Text</span> AI
+              Snaplix
             </span>
           )}
         </div>
