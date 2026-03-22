@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Environment files — NEVER commit these
+.env
+*/.env
+**/.env
+
+# Build output
+frontend/build/
+frontend/.cache/
+
+# Uploads (user files)
+backend/uploads/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Tesseract cache
+backend/tessdata/
