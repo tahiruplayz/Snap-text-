@@ -42,13 +42,13 @@
 
   /* Badges */
   .badge        { @apply inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full; }
-  .badge-blue   { @apply badge bg-blue-500/15 text-blue-400 border border-blue-500/25; }
-  .badge-purple { @apply badge bg-violet-500/15 text-violet-400 border border-violet-500/25; }
-  .badge-cyan   { @apply badge bg-cyan-500/15 text-cyan-400 border border-cyan-500/25; }
-  .badge-gold   { @apply badge bg-yellow-500/15 text-yellow-400 border border-yellow-500/25; }
+  .badge-blue   { @apply badge bg-blue-500/10 text-blue-400 border border-blue-500/30; }
+  .badge-purple { @apply badge bg-violet-500/10 text-violet-400 border border-violet-500/30; }
+  .badge-cyan   { @apply badge bg-cyan-500/10 text-cyan-400 border border-cyan-500/30; }
+  .badge-gold   { @apply badge bg-yellow-500/10 text-yellow-400 border border-yellow-500/30; }
 
   .section-label { @apply text-xs font-bold text-slate-500 uppercase tracking-widest; }
-  .divider       { @apply border-t border-white/8; }
+  .divider       { @apply border-t border-white/10; }
 
   /* Gradient text */
   .gradient-text { @apply bg-gradient-to-r from-blue-400 via-violet-400 to-cyan-400 bg-clip-text text-transparent; }
