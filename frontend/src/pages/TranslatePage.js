@@ -30,29 +30,30 @@ export default function TranslatePage() {
   };
 
   return (
-    <div className="p-6 flex flex-col gap-6 animate-fade-in">
+    <div className="p-4 sm:p-6 flex flex-col gap-4 sm:gap-6 animate-fade-in">
       <PageHeader
         icon={Languages}
         title="Translation Tool"
         description="Translate extracted or custom text into any language"
         action={
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap justify-end">
             <select
               value={targetLang}
               onChange={e => setTargetLang(e.target.value)}
-              className="input w-40 py-2"
+              className="input w-32 sm:w-40 py-2 text-sm"
             >
               {LANGS.map(l => <option key={l}>{l}</option>)}
             </select>
             <button onClick={handle} disabled={loading || !input.trim()} className="btn-primary">
               {loading ? <Spinner size={14} /> : <Languages size={15} />}
-              {loading ? 'Translating...' : 'Translate'}
+              <span className="hidden sm:inline">{loading ? 'Translating...' : 'Translate'}</span>
+              <span className="sm:hidden">{loading ? '...' : 'Go'}</span>
             </button>
           </div>
         }
       />
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="card-p">
           <TextPanel
             label="Source Text"

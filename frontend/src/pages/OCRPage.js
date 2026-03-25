@@ -100,7 +100,7 @@ export default function OCRPage() {
   };
 
   return (
-    <div className="p-6 h-full flex flex-col gap-6 animate-fade-in">
+    <div className="p-4 sm:p-6 h-full flex flex-col gap-4 sm:gap-6 animate-fade-in">
       <PageHeader
         icon={ScanText}
         title="OCR Text Extraction"

@@ -24,7 +24,7 @@ export default function CleanPage() {
   };
 
   return (
-    <div className="p-6 flex flex-col gap-6 animate-fade-in">
+    <div className="p-4 sm:p-6 flex flex-col gap-4 sm:gap-6 animate-fade-in">
       <PageHeader
         icon={Sparkles}
         title="AI Text Cleaner"
@@ -37,7 +37,7 @@ export default function CleanPage() {
         }
       />
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="card-p">
           <TextPanel
             label="Input Text"

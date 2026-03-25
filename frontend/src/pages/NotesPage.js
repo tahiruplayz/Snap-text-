@@ -41,7 +41,7 @@ export default function NotesPage() {
   const output = activeTab === 'notes' ? notes : summary;
 
   return (
-    <div className="p-6 flex flex-col gap-6 animate-fade-in">
+    <div className="p-4 sm:p-6 flex flex-col gap-4 sm:gap-6 animate-fade-in">
       <PageHeader
         icon={BookOpen}
         title="Notes Generator"
@@ -60,7 +60,7 @@ export default function NotesPage() {
         }
       />
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="card-p">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-slate-300">Input Text</span>

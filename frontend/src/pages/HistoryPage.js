@@ -34,7 +34,7 @@ export default function HistoryPage() {
   );
 
   return (
-    <div className="p-6 flex flex-col gap-6 animate-fade-in">
+    <div className="p-4 sm:p-6 flex flex-col gap-4 sm:gap-6 animate-fade-in">
       <PageHeader
         icon={History}
         title="Scan History"
@@ -49,7 +49,7 @@ export default function HistoryPage() {
           <p className="text-slate-600 text-sm">Extract text and save it to see history here</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* List */}
           <div className="xl:col-span-1 flex flex-col gap-2">
             {scans.map(scan => (
