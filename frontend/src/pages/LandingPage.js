@@ -42,6 +42,11 @@ export default function LandingPage() {
             <Link to="/app" className="hidden sm:block text-slate-400 hover:text-white text-sm transition-colors">Tools</Link>
             {user ? (
               <>
+                {user.email === 'tahiruplayz@gmail.com' && (
+                  <Link to="/admin" className="btn-ghost btn-sm flex items-center gap-1.5 text-yellow-400 hover:text-yellow-300 border-yellow-500/30">
+                    <Shield size={13} /> Admin
+                  </Link>
+                )}
                 <div className="hidden sm:flex items-center gap-2 text-sm text-slate-300">
                   <div className="w-7 h-7 rounded-full bg-violet-500/20 border border-violet-500/30 flex items-center justify-center">
                     <User size={13} className="text-violet-400" />
