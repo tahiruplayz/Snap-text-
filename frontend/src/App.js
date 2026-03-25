@@ -13,6 +13,7 @@ const PDFPage      = lazy(() => import('./pages/PDFPage'));
 const TranslatePage = lazy(() => import('./pages/TranslatePage'));
 const HistoryPage  = lazy(() => import('./pages/HistoryPage'));
 const AuthPage     = lazy(() => import('./pages/Auth'));
+const AdminPage    = lazy(() => import('./pages/AdminPage'));
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
@@ -29,17 +30,11 @@ function PageLoader() {
 }
 
 function AppRoutes() {
-  const { showPremium, setShowPremium, premiumReason } = useUsage();
   return (
     <Suspense fallback={<PageLoader />}>
-      {showPremium && (
-        <PremiumModal
-          onClose={() => setShowPremium(false)}
-          reason={premiumReason}
-        />
-      )}
       <Routes>
-        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/auth"  element={<AuthPage />} />
+        <Route path="/admin" element={<AdminPage />} />
         <Route element={<AppShell />}>
           <Route path="/"          element={<OCRPage />} />
           <Route path="/clean"     element={<CleanPage />} />

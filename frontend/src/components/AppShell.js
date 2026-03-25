@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Outlet, NavLink, Link, useNavigate } from 'react-router-dom';
 import {
   ScanText, Sparkles, BookOpen, FileText, Languages,
-  History, ChevronLeft, ChevronRight, LogOut, LogIn, User, Zap, Menu, X,
+  History, ChevronLeft, ChevronRight, LogOut, LogIn, User, Zap, Menu, X, Crown,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useUsage } from '../context/UsageContext';
+import PremiumModal from './PremiumModal';
 
 const NAV = [
   { to: '/',          icon: ScanText,   label: 'Extract' },
@@ -18,13 +20,17 @@ const NAV = [
 export default function AppShell() {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { user, userName, logout } = useAuth();
+  const { user, userName, isPremium, logout } = useAuth();
+  const { showPremium, setShowPremium, premiumReason } = useUsage();
   const navigate = useNavigate();
 
   const handleLogout = () => { logout(); navigate('/'); setMobileMenuOpen(false); };
 
   return (
     <div className="flex h-screen overflow-hidden bg-surface">
+      {showPremium && (
+        <PremiumModal onClose={() => setShowPremium(false)} reason={premiumReason} />
+      )}
 
       {/* ── Desktop Sidebar ── */}
       <aside className={`hidden md:flex flex-col flex-shrink-0 bg-surface-2 border-r border-surface-3
@@ -71,7 +77,18 @@ export default function AppShell() {
                     <User size={12} className="text-brand-purple" />
                   </div>
                   <span className="text-xs text-slate-400 truncate">{userName}</span>
+                  {isPremium && <span className="text-yellow-400 text-xs">👑</span>}
                 </div>
+              )}
+              {!isPremium && (
+                <button
+                  onClick={() => setShowPremium(true)}
+                  className={`nav-item text-yellow-400 hover:text-yellow-300 hover:bg-yellow-500/10 ${collapsed ? 'justify-center px-0' : ''}`}
+                  title={collapsed ? 'Upgrade to Pro' : undefined}
+                >
+                  <Crown size={16} />
+                  {!collapsed && <span>Upgrade to Pro</span>}
+                </button>
               )}
               <button
                 onClick={handleLogout}
@@ -82,10 +99,20 @@ export default function AppShell() {
               </button>
             </>
           ) : (
-            <Link to="/auth" className={`nav-item ${collapsed ? 'justify-center px-0' : ''}`}>
-              <LogIn size={16} />
-              {!collapsed && <span>Sign In</span>}
-            </Link>
+            <>
+              <button
+                onClick={() => setShowPremium(true)}
+                className={`nav-item text-yellow-400 hover:text-yellow-300 hover:bg-yellow-500/10 ${collapsed ? 'justify-center px-0' : ''}`}
+                title={collapsed ? 'Upgrade to Pro' : undefined}
+              >
+                <Crown size={16} />
+                {!collapsed && <span>Upgrade to Pro</span>}
+              </button>
+              <Link to="/auth" className={`nav-item ${collapsed ? 'justify-center px-0' : ''}`}>
+                <LogIn size={16} />
+                {!collapsed && <span>Sign In</span>}
+              </Link>
+            </>
           )}
           <button
             onClick={() => setCollapsed(c => !c)}
@@ -201,15 +228,32 @@ export default function AppShell() {
                       <User size={13} className="text-brand-purple" />
                     </div>
                     <span className="text-sm text-slate-300 truncate">{userName}</span>
+                    {isPremium && <span className="text-yellow-400 text-xs">👑 Pro</span>}
                   </div>
+                  {!isPremium && (
+                    <button
+                      onClick={() => { setShowPremium(true); setMobileMenuOpen(false); }}
+                      className="nav-item text-yellow-400 hover:text-yellow-300 hover:bg-yellow-500/10 w-full mb-1"
+                    >
+                      <Crown size={16} /> Upgrade to Pro
+                    </button>
+                  )}
                   <button onClick={handleLogout} className="nav-item text-red-400 hover:text-red-300 hover:bg-red-500/10 w-full">
                     <LogOut size={16} /> Logout
                   </button>
                 </>
               ) : (
-                <Link to="/auth" onClick={() => setMobileMenuOpen(false)} className="nav-item w-full">
-                  <LogIn size={16} /> Sign In
-                </Link>
+                <>
+                  <button
+                    onClick={() => { setShowPremium(true); setMobileMenuOpen(false); }}
+                    className="nav-item text-yellow-400 hover:text-yellow-300 hover:bg-yellow-500/10 w-full mb-1"
+                  >
+                    <Crown size={16} /> Upgrade to Pro
+                  </button>
+                  <Link to="/auth" onClick={() => setMobileMenuOpen(false)} className="nav-item w-full">
+                    <LogIn size={16} /> Sign In
+                  </Link>
+                </>
               )}
             </div>
           </div>
