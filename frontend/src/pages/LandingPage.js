@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   ScanText, Sparkles, BookOpen, FileText, Languages, History,
@@ -36,7 +36,7 @@ export default function LandingPage() {
             <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
               <Zap size={16} className="text-white" />
             </div>
-            <span className="font-bold text-white text-lg tracking-tight">Snaplix</span>
+            <span className="font-bold text-white text-lg tracking-tight">Scanlix</span>
           </Link>
           <div className="flex items-center gap-3">
             <Link to="/app" className="hidden sm:block text-slate-400 hover:text-white text-sm transition-colors">Tools</Link>
@@ -143,7 +143,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Why Snaplix ── */}
+      {/* ── Why Scanlix ── */}
       <section className="py-20 px-4 sm:px-6 relative">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-950/20 to-transparent pointer-events-none" />
         <div className="relative max-w-6xl mx-auto">
@@ -207,7 +207,7 @@ export default function LandingPage() {
                 <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center">
                   <Zap size={14} className="text-white" />
                 </div>
-                <span className="font-bold text-white">Snaplix</span>
+                <span className="font-bold text-white">Scanlix</span>
               </div>
               <p className="text-slate-500 text-sm leading-relaxed">Fast, free, AI-powered tools for everyday text and image tasks.</p>
             </div>
@@ -233,7 +233,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="divider pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p className="text-slate-600 text-sm">© 2024 Snaplix. All rights reserved.</p>
+            <p className="text-slate-600 text-sm">© 2024 Scanlix. All rights reserved.</p>
             <p className="text-slate-600 text-sm">Made with ❤️ for productivity</p>
           </div>
         </div>

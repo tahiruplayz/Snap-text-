@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { FileText, Download } from 'lucide-react';
 import toast from 'react-hot-toast';
 import PageHeader from '../components/PageHeader';
@@ -61,7 +61,7 @@ export default function PDFPage() {
     if (!content) content = await extractAll();
     if (!content) return toast.error('No text extracted');
     try {
-      const res = await generatePDF(title || 'Snaplix Export', content);
+      const res = await generatePDF(title || 'Scanlix Export', content);
       const url = URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
       Object.assign(document.createElement('a'), { href: url, download: `snaptext-${Date.now()}.pdf` }).click();
       URL.revokeObjectURL(url);
@@ -73,7 +73,7 @@ export default function PDFPage() {
     let content = preview;
     if (!content) content = await extractAll();
     if (!content) return toast.error('No text extracted');
-    try { await generateDocx(title || 'Snaplix Export', content); toast.success('DOCX downloaded'); }
+    try { await generateDocx(title || 'Scanlix Export', content); toast.success('DOCX downloaded'); }
     catch { toast.error('DOCX failed'); }
   };
 

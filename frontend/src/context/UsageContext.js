@@ -1,8 +1,8 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+﻿import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAuth } from './AuthContext';
 
 const LIMITS = { ocr: 5, clean: 2, translate: 2, pdf: 1 };
-const STORAGE_KEY = 'snaplix_usage';
+const STORAGE_KEY = 'Scanlix_usage';
 
 function getTodayKey() {
   return new Date().toISOString().split('T')[0];

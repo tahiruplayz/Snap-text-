@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+﻿const fetch = require('node-fetch');
 
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
@@ -14,7 +14,7 @@ async function callOpenRouter(systemPrompt, userContent) {
       Authorization: `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
       'HTTP-Referer': 'http://localhost:3000',
-      'X-Title': 'Snaplix',
+      'X-Title': 'Scanlix',
     },
     body: JSON.stringify({
       model,

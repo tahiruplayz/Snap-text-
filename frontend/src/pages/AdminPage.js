@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Shield, Check, Search, Crown, Trash2, Users } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { supabase } from '../lib/supabase';
@@ -103,7 +103,7 @@ export default function AdminPage() {
         {/* Header */}
         <div className="flex items-center gap-3 mb-6">
           <Shield size={22} className="text-blue-400" />
-          <h1 className="text-xl font-bold text-white">Snaplix Admin</h1>
+          <h1 className="text-xl font-bold text-white">Scanlix Admin</h1>
           <span className="badge-blue">Panel</span>
           <span className="badge-gold ml-auto">{premiumUsers.length} Pro Users</span>
         </div>

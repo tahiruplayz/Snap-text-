@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Outlet, NavLink, Link, useNavigate } from 'react-router-dom';
 import {
   ScanText, Sparkles, BookOpen, FileText, Languages,
@@ -43,7 +43,7 @@ export default function AppShell() {
           </div>
           {!collapsed && (
             <span className="font-bold text-white text-base tracking-tight whitespace-nowrap">
-              Snaplix
+              Scanlix
             </span>
           )}
         </div>
@@ -142,7 +142,7 @@ export default function AppShell() {
             <div className="w-7 h-7 rounded-lg bg-brand-blue/20 border border-brand-blue/30 flex items-center justify-center">
               <Zap size={14} className="text-brand-blue" />
             </div>
-            <span className="font-bold text-white text-sm">Snaplix</span>
+            <span className="font-bold text-white text-sm">Scanlix</span>
           </div>
 
           <div className="flex-1" />
@@ -197,7 +197,7 @@ export default function AppShell() {
             <div className="h-14 flex items-center justify-between px-4 border-b border-surface-3">
               <div className="flex items-center gap-2">
                 <Zap size={16} className="text-brand-blue" />
-                <span className="font-bold text-white">Snaplix</span>
+                <span className="font-bold text-white">Scanlix</span>
               </div>
               <button onClick={() => setMobileMenuOpen(false)} className="p-1.5 rounded-lg hover:bg-surface-3 text-slate-400">
                 <X size={18} />

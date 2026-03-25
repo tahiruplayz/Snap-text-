@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Zap, Mail, Lock, User, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -53,7 +53,7 @@ export default function Auth() {
               <Zap size={18} className="text-brand-blue" />
             </div>
             <span className="font-bold text-white text-lg">
-              Snaplix
+              Scanlix
             </span>
           </div>
 
@@ -61,7 +61,7 @@ export default function Auth() {
             {mode === 'login' ? 'Welcome back' : 'Create account'}
           </h1>
           <p className="text-slate-400 text-sm mb-6">
-            {mode === 'login' ? 'Sign in to save your scan history' : 'Join Snaplix today'}
+            {mode === 'login' ? 'Sign in to save your scan history' : 'Join Scanlix today'}
           </p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">

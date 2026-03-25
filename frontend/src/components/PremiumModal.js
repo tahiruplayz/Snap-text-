@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { X, Zap, Check, Crown, Copy } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -58,7 +58,7 @@ export default function PremiumModal({ onClose, reason }) {
   const handleWhatsApp = () => {
     const method = selectedMethod?.name || 'JazzCash/Easypaisa/Payoneer';
     const msg = encodeURIComponent(
-      `Hi! I want to upgrade to Snaplix Pro.\nPayment method: ${method}\nPlease confirm my account activation.`
+      `Hi! I want to upgrade to Scanlix Pro.\nPayment method: ${method}\nPlease confirm my account activation.`
     );
     window.open(`https://wa.me/923234109619?text=${msg}`, '_blank');
   };
@@ -79,7 +79,7 @@ export default function PremiumModal({ onClose, reason }) {
               <Crown size={18} className="text-yellow-400" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-white">Snaplix Pro</h2>
+              <h2 className="text-lg font-bold text-white">Scanlix Pro</h2>
               <p className="text-slate-400 text-xs">Unlock unlimited access · $5/month</p>
             </div>
           </div>
