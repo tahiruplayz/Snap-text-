@@ -8,6 +8,7 @@ import TextPanel from '../components/TextPanel';
 import Spinner from '../components/Spinner';
 import ProgressBar from '../components/ProgressBar';
 import { useAuth } from '../context/AuthContext';
+import { useUsage } from '../context/UsageContext';
 import { uploadImages, extractText } from '../services/api';
 import { saveScan } from '../lib/scans';
 
@@ -24,6 +25,7 @@ const LANGS = [
 
 export default function OCRPage() {
   const { user } = useAuth();
+  const { tryUse, remaining } = useUsage();
   const [localImages, setLocalImages]     = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -73,6 +75,7 @@ export default function OCRPage() {
 
   const handleExtract = () => {
     if (!uploadedFiles[selectedIndex]) return toast.error('Upload an image first');
+    if (!tryUse('ocr')) return;
     runOCR(uploadedFiles[selectedIndex], autoDetect ? 'auto' : manualLang);
   };
 
@@ -148,7 +151,7 @@ export default function OCRPage() {
             <div className="flex gap-2">
               <button onClick={handleExtract} disabled={extracting || !uploadedFiles.length} className="btn-primary flex-1">
                 {extracting ? <Spinner size={14} /> : <ScanText size={15} />}
-                {extracting ? 'Extracting...' : 'Extract Text'}
+                {extracting ? 'Extracting...' : `Extract Text (${remaining('ocr')} left)`}
               </button>
               {uploadedFiles.length > 1 && (
                 <button onClick={handleExtractAll} disabled={extracting} className="btn-ghost">

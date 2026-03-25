@@ -2,6 +2,8 @@ import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { UsageProvider, useUsage } from './context/UsageContext';
+import PremiumModal from './components/PremiumModal';
 import AppShell from './components/AppShell';
 
 const OCRPage      = lazy(() => import('./pages/OCRPage'));
@@ -27,8 +29,15 @@ function PageLoader() {
 }
 
 function AppRoutes() {
+  const { showPremium, setShowPremium, premiumReason } = useUsage();
   return (
     <Suspense fallback={<PageLoader />}>
+      {showPremium && (
+        <PremiumModal
+          onClose={() => setShowPremium(false)}
+          reason={premiumReason}
+        />
+      )}
       <Routes>
         <Route path="/auth" element={<AuthPage />} />
         <Route element={<AppShell />}>
@@ -48,7 +57,8 @@ function AppRoutes() {
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <UsageProvider>
+        <BrowserRouter>
         <Toaster
           position="top-right"
           toastOptions={{
@@ -63,6 +73,7 @@ export default function App() {
         />
         <AppRoutes />
       </BrowserRouter>
+      </UsageProvider>
     </AuthProvider>
   );
 }

@@ -5,14 +5,17 @@ import PageHeader from '../components/PageHeader';
 import TextPanel from '../components/TextPanel';
 import Spinner from '../components/Spinner';
 import { cleanText } from '../services/api';
+import { useUsage } from '../context/UsageContext';
 
 export default function CleanPage() {
   const [input, setInput]     = useState('');
   const [output, setOutput]   = useState('');
   const [loading, setLoading] = useState(false);
+  const { tryUse, remaining } = useUsage();
 
   const handle = async () => {
     if (!input.trim()) return toast.error('Paste some text first');
+    if (!tryUse('clean')) return;
     setLoading(true);
     try {
       const res = await cleanText(input);
@@ -32,7 +35,7 @@ export default function CleanPage() {
         action={
           <button onClick={handle} disabled={loading || !input.trim()} className="btn-primary">
             {loading ? <Spinner size={14} /> : <Sparkles size={15} />}
-            {loading ? 'Cleaning...' : 'Clean Text'}
+            {loading ? 'Cleaning...' : `Clean Text (${remaining('clean')} left)`}
           </button>
         }
       />
