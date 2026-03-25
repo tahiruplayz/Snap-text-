@@ -1,9 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   ScanText, Sparkles, BookOpen, FileText, Languages, History,
-  Zap, Shield, Globe, ArrowRight, Check, Star,
+  Zap, Shield, Globe, ArrowRight, Check, Star, LogOut, User,
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const TOOLS = [
   { icon: ScanText,  label: 'OCR Extract',      desc: 'Extract text from any image instantly with AI-powered OCR',       to: '/',          color: 'from-blue-500/20 to-blue-600/10',   border: 'border-blue-500/20',   iconColor: 'text-blue-400' },
@@ -22,6 +23,10 @@ const WHY = [
 ];
 
 export default function LandingPage() {
+  const { user, userName, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => { await logout(); navigate('/'); };
   return (
     <div className="min-h-screen bg-[#0a0f1e] overflow-x-hidden">
       {/* ── Navbar ── */}
@@ -35,8 +40,25 @@ export default function LandingPage() {
           </Link>
           <div className="flex items-center gap-3">
             <Link to="/app" className="hidden sm:block text-slate-400 hover:text-white text-sm transition-colors">Tools</Link>
-            <Link to="/auth" className="btn-ghost btn-sm">Sign In</Link>
-            <Link to="/app" className="btn-primary btn-sm">Get Started</Link>
+            {user ? (
+              <>
+                <div className="hidden sm:flex items-center gap-2 text-sm text-slate-300">
+                  <div className="w-7 h-7 rounded-full bg-violet-500/20 border border-violet-500/30 flex items-center justify-center">
+                    <User size={13} className="text-violet-400" />
+                  </div>
+                  {userName}
+                </div>
+                <Link to="/app" className="btn-ghost btn-sm">Dashboard</Link>
+                <button onClick={handleLogout} className="btn-ghost btn-sm flex items-center gap-1.5 text-red-400 hover:text-red-300">
+                  <LogOut size={13} /> Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/auth" className="btn-ghost btn-sm">Sign In</Link>
+                <Link to="/app" className="btn-primary btn-sm">Get Started</Link>
+              </>
+            )}
           </div>
         </div>
       </nav>
