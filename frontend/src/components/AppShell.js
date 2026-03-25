@@ -9,12 +9,12 @@ import { useUsage } from '../context/UsageContext';
 import PremiumModal from './PremiumModal';
 
 const NAV = [
-  { to: '/',          icon: ScanText,   label: 'Extract' },
-  { to: '/clean',     icon: Sparkles,   label: 'Clean' },
-  { to: '/notes',     icon: BookOpen,   label: 'Notes' },
-  { to: '/pdf',       icon: FileText,   label: 'PDF' },
-  { to: '/translate', icon: Languages,  label: 'Translate' },
-  { to: '/history',   icon: History,    label: 'History' },
+  { to: '/app',           icon: ScanText,   label: 'Extract' },
+  { to: '/app/clean',     icon: Sparkles,   label: 'Clean' },
+  { to: '/app/notes',     icon: BookOpen,   label: 'Notes' },
+  { to: '/app/pdf',       icon: FileText,   label: 'PDF' },
+  { to: '/app/translate', icon: Languages,  label: 'Translate' },
+  { to: '/app/history',   icon: History,    label: 'History' },
 ];
 
 export default function AppShell() {
@@ -55,7 +55,7 @@ export default function AppShell() {
             <NavLink
               key={to}
               to={to}
-              end={to === '/'}
+              end={to === '/app'}
               className={({ isActive }) =>
                 `${isActive ? 'nav-item-active' : 'nav-item'} ${collapsed ? 'justify-center px-0' : ''}`
               }
@@ -172,7 +172,7 @@ export default function AppShell() {
           <NavLink
             key={to}
             to={to}
-            end={to === '/'}
+            end={to === '/app'}
             className={({ isActive }) =>
               `flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-xl transition-colors min-w-0
               ${isActive ? 'text-brand-blue' : 'text-slate-500 hover:text-slate-300'}`
@@ -210,7 +210,7 @@ export default function AppShell() {
                 <NavLink
                   key={to}
                   to={to}
-                  end={to === '/'}
+                  end={to === '/app'}
                   onClick={() => setMobileMenuOpen(false)}
                   className={({ isActive }) => isActive ? 'nav-item-active' : 'nav-item'}
                 >
@@ -262,3 +262,4 @@ export default function AppShell() {
     </div>
   );
 }
+
