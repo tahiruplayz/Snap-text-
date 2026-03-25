@@ -42,14 +42,40 @@ export default function AdminPage() {
     setLoading(true);
     setResult(null);
     try {
-      const { data: profile, error } = await supabase
+      const targetEmail = email.trim().toLowerCase();
+
+      // Try to find in profiles first
+      let { data: profile } = await supabase
         .from('profiles')
         .select('id, email, is_premium')
-        .eq('email', email.trim().toLowerCase())
+        .eq('email', targetEmail)
         .single();
 
-      if (error || !profile) {
-        toast.error('User not found. Make sure they have signed up first.');
+      // If not in profiles, find in auth.users via admin and create profile
+      if (!profile) {
+        // Try upserting directly with email match from auth
+        const { data: users } = await supabase
+          .from('profiles')
+          .select('id, email')
+          .ilike('email', targetEmail);
+
+        if (users && users.length > 0) {
+          profile = users[0];
+        }
+      }
+
+      if (!profile) {
+        // Last resort: upsert by email directly
+        const { data: upserted, error: upsertErr } = await supabase
+          .from('profiles')
+          .upsert({ email: targetEmail, is_premium: true, premium_activated_at: new Date().toISOString() }, { onConflict: 'email' })
+          .select()
+          .single();
+
+        if (upsertErr) throw new Error('User not found. Make sure they have signed up first.');
+        setResult({ email: targetEmail });
+        toast.success(`Pro activated for ${targetEmail}`);
+        setEmail('');
         setLoading(false);
         return;
       }

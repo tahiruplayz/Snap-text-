@@ -3,7 +3,7 @@
 -- Profiles table (premium status)
 create table if not exists public.profiles (
   id         uuid references auth.users(id) on delete cascade primary key,
-  email      text,
+  email      text unique,
   is_premium boolean default false,
   premium_activated_at timestamptz,
   created_at timestamptz default now()
