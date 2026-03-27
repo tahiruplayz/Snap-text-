@@ -138,7 +138,7 @@ export default function AdminPage() {
                   <p className="text-slate-500 text-xs text-center py-4">No users found</p>
                 ) : filteredUsers.map(u => (
                   <div key={u.id} className={`flex items-center justify-between gap-2 p-2.5 rounded-xl border transition-colors
-                    ${u.is_premium ? 'bg-yellow-500/5 border-yellow-500/20' : 'bg-white/3 border-white/5 hover:border-white/10'}`}>
+                    ${u.is_premium ? 'bg-yellow-500/10 border-yellow-500/20' : 'bg-white/5 border-white/5 hover:border-white/10'}`}>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
                         {u.is_premium && <Crown size={11} className="text-yellow-400 flex-shrink-0" />}
@@ -211,7 +211,7 @@ export default function AdminPage() {
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {premiumUsers.map(u => (
-                    <div key={u.id} className="flex items-center justify-between gap-2 bg-yellow-500/5 border border-yellow-500/20 rounded-xl px-3 py-2">
+                    <div key={u.id} className="flex items-center justify-between gap-2 bg-yellow-500/10 border border-yellow-500/20 rounded-xl px-3 py-2">
                       <div className="flex items-center gap-2 min-w-0">
                         <Crown size={12} className="text-yellow-400 flex-shrink-0" />
                         <p className="text-xs text-slate-300 truncate">{u.email}</p>

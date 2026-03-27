@@ -1,10 +1,4 @@
 import React from 'react';
-
-export default function Spinner({ size = 16, className = '' }) {
-  return (
-    <div
-      style={{ width: size, height: size, borderWidth: 2 }}
-      className={`border-white/20 border-t-blue-400 rounded-full animate-spin flex-shrink-0 ${className}`}
-    />
-  );
+export default function Spinner({ size = 18 }) {
+  return <div className="spinner" style={{ width: size, height: size, flexShrink: 0 }} />;
 }

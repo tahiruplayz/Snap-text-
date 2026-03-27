@@ -1,184 +1,144 @@
-import React, { useState } from 'react';
-import { ScanText, Wand2, Globe } from 'lucide-react';
+﻿import React, { useState } from 'react';
+import { ScanText, Wand2, Globe, Save } from 'lucide-react';
 import toast from 'react-hot-toast';
-import PageHeader from '../components/PageHeader';
 import ImageUploader from '../components/ImageUploader';
 import ImagePreview from '../components/ImagePreview';
-import TextPanel from '../components/TextPanel';
 import Spinner from '../components/Spinner';
 import ProgressBar from '../components/ProgressBar';
+import CopyButton from '../components/CopyButton';
 import { useAuth } from '../context/AuthContext';
 import { useUsage } from '../context/UsageContext';
 import { uploadImages, extractText } from '../services/api';
 import { saveScan } from '../lib/scans';
 
 const LANGS = [
-  { code: 'eng', label: 'English' },
-  { code: 'urd', label: 'Urdu' },
-  { code: 'hin', label: 'Hindi' },
-  { code: 'ara', label: 'Arabic' },
-  { code: 'chi_sim', label: 'Chinese (Simplified)' },
-  { code: 'chi_tra', label: 'Chinese (Traditional)' },
-  { code: 'jpn', label: 'Japanese' },
-  { code: 'spa', label: 'Spanish' },
+  { code: 'eng', label: 'English' }, { code: 'urd', label: 'Urdu' },
+  { code: 'hin', label: 'Hindi' },   { code: 'ara', label: 'Arabic' },
+  { code: 'chi_sim', label: 'Chinese (Simplified)' }, { code: 'chi_tra', label: 'Chinese (Traditional)' },
+  { code: 'jpn', label: 'Japanese' }, { code: 'spa', label: 'Spanish' },
 ];
 
 export default function OCRPage() {
   const { user } = useAuth();
   const { tryUse, remaining } = useUsage();
-  const [localImages, setLocalImages]     = useState([]);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [uploading, setUploading]         = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [autoDetect, setAutoDetect]       = useState(true);
-  const [manualLang, setManualLang]       = useState('eng');
-  const [extracting, setExtracting]       = useState(false);
-  const [ocrProgress, setOcrProgress]     = useState(0);
-  const [rawText, setRawText]             = useState('');
-  const [detectedLang, setDetectedLang]   = useState('');
+  const [localImgs, setLocalImgs]   = useState([]);
+  const [uploaded, setUploaded]     = useState([]);
+  const [selIdx, setSelIdx]         = useState(0);
+  const [uploading, setUploading]   = useState(false);
+  const [upProg, setUpProg]         = useState(0);
+  const [auto, setAuto]             = useState(true);
+  const [lang, setLang]             = useState('eng');
+  const [extracting, setExtracting] = useState(false);
+  const [ocrProg, setOcrProg]       = useState(0);
+  const [text, setText]             = useState('');
+  const [detLang, setDetLang]       = useState('');
 
   const handleFiles = async (files) => {
-    setLocalImages(p => [...p, ...files.map(f => ({ file: f, preview: URL.createObjectURL(f), name: f.name }))]);
-    setUploading(true); setUploadProgress(0);
+    setLocalImgs(p => [...p, ...files.map(f => ({ file: f, preview: URL.createObjectURL(f), name: f.name }))]);
+    setUploading(true); setUpProg(0);
     try {
       const fd = new FormData();
       files.forEach(f => fd.append('images', f));
-      const res = await uploadImages(fd, setUploadProgress);
-      setUploadedFiles(p => [...p, ...res.data.files]);
+      const res = await uploadImages(fd, setUpProg);
+      setUploaded(p => [...p, ...res.data.files]);
       toast.success(`${files.length} image(s) ready`);
-    } catch (err) {
-      toast.error(err.response?.data?.error || 'Upload failed');
-    } finally { setUploading(false); }
+    } catch (err) { toast.error(err.response?.data?.error || 'Upload failed'); }
+    finally { setUploading(false); }
   };
 
-  const handleRemove = (i) => {
-    setLocalImages(p => p.filter((_, idx) => idx !== i));
-    setUploadedFiles(p => p.filter((_, idx) => idx !== i));
-    if (selectedIndex >= i && selectedIndex > 0) setSelectedIndex(selectedIndex - 1);
-  };
-
-  const runOCR = async (file, lang) => {
-    setExtracting(true); setOcrProgress(10); setRawText(''); setDetectedLang('');
-    try {
-      setOcrProgress(40);
-      const res = await extractText(file.filename, lang);
-      setOcrProgress(100);
-      setRawText(res.data.text);
-      setDetectedLang(res.data.languageName || res.data.language);
-      if (res.data.autoDetected) toast.success(`Language detected: ${res.data.languageName}`);
-      else toast.success('Text extracted');
-    } catch (err) {
-      toast.error(err.response?.data?.error || 'Extraction failed');
-    } finally { setExtracting(false); }
-  };
-
-  const handleExtract = () => {
-    if (!uploadedFiles[selectedIndex]) return toast.error('Upload an image first');
+  const handleExtract = async () => {
+    if (!uploaded[selIdx]) return toast.error('Upload an image first');
     if (!tryUse('ocr')) return;
-    runOCR(uploadedFiles[selectedIndex], autoDetect ? 'auto' : manualLang);
-  };
-
-  const handleExtractAll = async () => {
-    if (!uploadedFiles.length) return toast.error('Upload images first');
-    setExtracting(true); let combined = '';
-    for (let i = 0; i < uploadedFiles.length; i++) {
-      setOcrProgress(Math.round((i / uploadedFiles.length) * 100));
-      try {
-        const res = await extractText(uploadedFiles[i].filename, autoDetect ? 'auto' : manualLang);
-        combined += `\n\n--- Image ${i + 1} ---\n\n${res.data.text}`;
-      } catch {}
-    }
-    setRawText(combined.trim()); setOcrProgress(100); setExtracting(false);
-    toast.success('All images extracted');
+    setExtracting(true); setOcrProg(20); setText(''); setDetLang('');
+    try {
+      setOcrProg(50);
+      const res = await extractText(uploaded[selIdx].filename, auto ? 'auto' : lang);
+      setOcrProg(100); setText(res.data.text);
+      setDetLang(res.data.languageName || '');
+      if (res.data.autoDetected) toast.success(`Detected: ${res.data.languageName}`);
+      else toast.success('Text extracted');
+    } catch (err) { toast.error(err.response?.data?.error || 'Extraction failed'); }
+    finally { setExtracting(false); }
   };
 
   const handleSave = async () => {
-    if (!user) return toast.error('Sign in to save scans');
-    if (!rawText) return toast.error('Nothing to save');
-    try {
-      await saveScan({ imageName: uploadedFiles[selectedIndex]?.originalname, language: manualLang, rawText });
-      toast.success('Saved to history');
-    } catch { toast.error('Save failed'); }
+    if (!user) return toast.error('Sign in to save');
+    if (!text) return toast.error('Nothing to save');
+    try { await saveScan({ imageName: uploaded[selIdx]?.originalname, language: lang, rawText: text }); toast.success('Saved'); }
+    catch { toast.error('Save failed'); }
   };
 
   return (
-    <div className="p-4 sm:p-6 h-full flex flex-col gap-4 sm:gap-6 animate-fade-in">
-      <PageHeader
-        icon={ScanText}
-        title="OCR Text Extraction"
-        description="Upload an image and extract text automatically"
-        badge="Auto Detect"
-      />
+    <div style={{ padding: 24, maxWidth: 1200, margin: '0 auto' }} className="animate-fade">
+      {/* Header */}
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <ScanText size={18} color="#60a5fa" />
+          </div>
+          <h1 style={{ fontSize: 20, fontWeight: 700, color: '#f1f5f9', margin: 0 }}>OCR Text Extraction</h1>
+          <span className="s-badge s-badge-blue">Auto Detect</span>
+        </div>
+        <p style={{ fontSize: 13, color: '#64748b', margin: 0 }}>Upload an image and extract text using AI-powered OCR</p>
+      </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 flex-1 min-h-0">
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }} className="grid-cols-1 lg:grid-cols-2">
         {/* Left */}
-        <div className="flex flex-col gap-4">
-          <div className="card-p flex flex-col gap-4">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div className="s-card" style={{ padding: 20 }}>
             <ImageUploader onFiles={handleFiles} uploading={uploading} />
-            {uploading && <ProgressBar progress={uploadProgress} label="Uploading" />}
-            <ImagePreview images={localImages} onRemove={handleRemove} onSelect={setSelectedIndex} selectedIndex={selectedIndex} />
+            {uploading && <div style={{ marginTop: 12 }}><ProgressBar progress={upProg} label="Uploading" /></div>}
+            <ImagePreview images={localImgs} onRemove={i => { setLocalImgs(p => p.filter((_,idx) => idx !== i)); setUploaded(p => p.filter((_,idx) => idx !== i)); }} onSelect={setSelIdx} selectedIndex={selIdx} />
           </div>
 
-          <div className="card-p flex flex-col gap-4">
-            {/* Language toggle */}
-            <div>
-              <p className="section-label mb-2">Language</p>
-              <div className="flex rounded-xl overflow-hidden border border-surface-4 bg-surface-3/40">
-                <button
-                  onClick={() => setAutoDetect(true)}
-                  className={`flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium transition-colors
-                    ${autoDetect ? 'bg-brand-blue text-white' : 'text-slate-400 hover:text-white'}`}
-                >
-                  <Wand2 size={14} /> Auto Detect
+          <div className="s-card" style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <p className="s-label">Language</p>
+            <div style={{ display: 'flex', borderRadius: 10, overflow: 'hidden', border: '1px solid #2d3748', background: '#0f1929' }}>
+              {[{ id: true, label: 'Auto Detect', icon: Wand2 }, { id: false, label: 'Manual', icon: Globe }].map(({ id, label, icon: Icon }) => (
+                <button key={String(id)} onClick={() => setAuto(id)}
+                  style={{ flex: 1, padding: '9px 0', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 13, fontWeight: 600, cursor: 'pointer', border: 'none', transition: 'all 0.15s', background: auto === id ? 'linear-gradient(135deg,#3b82f6,#8b5cf6)' : 'transparent', color: auto === id ? '#fff' : '#64748b' }}>
+                  <Icon size={13} /> {label}
                 </button>
-                <button
-                  onClick={() => setAutoDetect(false)}
-                  className={`flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium transition-colors
-                    ${!autoDetect ? 'bg-brand-blue text-white' : 'text-slate-400 hover:text-white'}`}
-                >
-                  <Globe size={14} /> Manual
-                </button>
-              </div>
+              ))}
             </div>
 
-            {!autoDetect && (
-              <select value={manualLang} onChange={e => setManualLang(e.target.value)} className="input">
+            {!auto && (
+              <select value={lang} onChange={e => setLang(e.target.value)} className="s-input">
                 {LANGS.map(l => <option key={l.code} value={l.code}>{l.label}</option>)}
               </select>
             )}
 
-            <div className="flex gap-2">
-              <button onClick={handleExtract} disabled={extracting || !uploadedFiles.length} className="btn-primary flex-1">
-                {extracting ? <Spinner size={14} /> : <ScanText size={15} />}
-                {extracting ? 'Extracting...' : `Extract Text (${remaining('ocr')} left)`}
-              </button>
-              {uploadedFiles.length > 1 && (
-                <button onClick={handleExtractAll} disabled={extracting} className="btn-ghost">
-                  All
-                </button>
-              )}
-            </div>
+            <button onClick={handleExtract} disabled={extracting || !uploaded.length} className="s-btn s-btn-primary" style={{ width: '100%', padding: '11px 0' }}>
+              {extracting ? <Spinner size={16} /> : <ScanText size={16} />}
+              {extracting ? 'Extracting...' : `Extract Text (${remaining('ocr')} left)`}
+            </button>
 
-            {extracting && <ProgressBar progress={ocrProgress} label="Running OCR" />}
+            {extracting && <ProgressBar progress={ocrProg} label="Running OCR" />}
           </div>
 
-          {rawText && (
-            <button onClick={handleSave} className="btn-ghost w-full">
-              Save to History
+          {text && (
+            <button onClick={handleSave} className="s-btn s-btn-ghost" style={{ width: '100%' }}>
+              <Save size={14} /> Save to History
             </button>
           )}
         </div>
 
         {/* Right */}
-        <div className="card-p flex flex-col gap-3 min-h-[400px]">
-          <TextPanel
-            label="Extracted Text"
-            value={rawText}
-            onChange={setRawText}
+        <div className="s-card" style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 13, fontWeight: 600, color: '#e2e8f0' }}>Extracted Text</span>
+              {detLang && <span className="s-badge s-badge-blue">{detLang}</span>}
+            </div>
+            <CopyButton text={text} />
+          </div>
+          <textarea
+            value={text}
+            onChange={e => setText(e.target.value)}
+            className="s-textarea"
+            rows={20}
             placeholder="Extracted text will appear here after running OCR..."
-            badge={detectedLang || undefined}
-            rows={18}
+            style={{ flex: 1 }}
           />
         </div>
       </div>

@@ -1,29 +1,20 @@
-import React from 'react';
+﻿import React from 'react';
 import { X } from 'lucide-react';
-
 export default function ImagePreview({ images, onRemove, onSelect, selectedIndex }) {
   if (!images.length) return null;
   return (
-    <div className="flex flex-wrap gap-2 mt-3">
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 12 }}>
       {images.map((img, i) => (
-        <div
-          key={i}
-          onClick={() => onSelect(i)}
-          className={`relative group cursor-pointer rounded-xl overflow-hidden border-2 transition-all
-            ${selectedIndex === i ? 'border-brand-blue shadow-glow' : 'border-surface-4 hover:border-brand-blue/40'}`}
-          style={{ width: 72, height: 72 }}
-        >
-          <img src={img.preview || img.url} alt="" className="w-full h-full object-cover" />
-          <button
-            onClick={e => { e.stopPropagation(); onRemove(i); }}
-            className="absolute top-1 right-1 w-5 h-5 bg-black/70 rounded-full flex items-center justify-center
-              opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
-          >
-            <X size={10} className="text-white" />
+        <div key={i} onClick={() => onSelect(i)}
+          style={{ position: 'relative', width: 72, height: 72, borderRadius: 10, overflow: 'hidden', cursor: 'pointer', border: `2px solid ${selectedIndex === i ? '#3b82f6' : '#2d3748'}`, transition: 'border-color 0.15s', flexShrink: 0 }}>
+          <img src={img.preview || img.url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <button onClick={e => { e.stopPropagation(); onRemove(i); }}
+            style={{ position: 'absolute', top: 3, right: 3, width: 18, height: 18, borderRadius: '50%', background: 'rgba(0,0,0,0.7)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0, transition: 'opacity 0.15s' }}
+            onMouseEnter={e => e.currentTarget.style.opacity = 1}
+            onMouseLeave={e => e.currentTarget.style.opacity = 0}>
+            <X size={10} color="#fff" />
           </button>
-          <div className="absolute bottom-0 inset-x-0 bg-black/60 text-white text-[10px] px-1 py-0.5 text-center truncate">
-            {i + 1}
-          </div>
+          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'rgba(0,0,0,0.6)', fontSize: 9, color: '#fff', textAlign: 'center', padding: '2px 0' }}>{i + 1}</div>
         </div>
       ))}
     </div>

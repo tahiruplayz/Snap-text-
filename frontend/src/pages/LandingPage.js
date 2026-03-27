@@ -33,7 +33,7 @@ export default function LandingPage() {
     <div className="min-h-screen overflow-x-hidden" style={{ background: '#0b1220' }}>
 
       {/* ── Navbar ── */}
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-surface-4"
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-[#2a3441]"
         style={{ background: 'rgba(11,18,32,0.85)', backdropFilter: 'blur(16px)' }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
@@ -210,7 +210,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-surface-4 py-14 px-4 sm:px-6">
+      <footer className="border-t border-[#2a3441] py-14 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 mb-12">
             <div>

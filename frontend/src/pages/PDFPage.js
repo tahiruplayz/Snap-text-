@@ -1,7 +1,6 @@
 ﻿import React, { useState } from 'react';
 import { FileText, Download } from 'lucide-react';
 import toast from 'react-hot-toast';
-import PageHeader from '../components/PageHeader';
 import ImageUploader from '../components/ImageUploader';
 import ImagePreview from '../components/ImagePreview';
 import Spinner from '../components/Spinner';
@@ -10,69 +9,56 @@ import { uploadImages, extractText, generatePDF } from '../services/api';
 import { generateDocx } from '../utils/docxExport';
 
 export default function PDFPage() {
-  const [localImages, setLocalImages]     = useState([]);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [uploading, setUploading]         = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [processing, setProcessing]       = useState(false);
-  const [progress, setProgress]           = useState(0);
-  const [title, setTitle]                 = useState('');
-  const [preview, setPreview]             = useState('');
+  const [localImgs, setLocalImgs] = useState([]);
+  const [uploaded, setUploaded]   = useState([]);
+  const [selIdx, setSelIdx]       = useState(0);
+  const [uploading, setUploading] = useState(false);
+  const [upProg, setUpProg]       = useState(0);
+  const [processing, setProcessing] = useState(false);
+  const [progress, setProgress]   = useState(0);
+  const [title, setTitle]         = useState('');
+  const [preview, setPreview]     = useState('');
 
   const handleFiles = async (files) => {
-    setLocalImages(p => [...p, ...files.map(f => ({ file: f, preview: URL.createObjectURL(f), name: f.name }))]);
-    setUploading(true); setUploadProgress(0);
+    setLocalImgs(p => [...p, ...files.map(f => ({ file: f, preview: URL.createObjectURL(f), name: f.name }))]);
+    setUploading(true); setUpProg(0);
     try {
       const fd = new FormData();
       files.forEach(f => fd.append('images', f));
-      const res = await uploadImages(fd, setUploadProgress);
-      setUploadedFiles(p => [...p, ...res.data.files]);
+      const res = await uploadImages(fd, setUpProg);
+      setUploaded(p => [...p, ...res.data.files]);
       toast.success(`${files.length} image(s) ready`);
     } catch (err) { toast.error(err.response?.data?.error || 'Upload failed'); }
     finally { setUploading(false); }
   };
 
-  const handleRemove = (i) => {
-    setLocalImages(p => p.filter((_, idx) => idx !== i));
-    setUploadedFiles(p => p.filter((_, idx) => idx !== i));
-    if (selectedIndex >= i && selectedIndex > 0) setSelectedIndex(selectedIndex - 1);
-  };
-
   const extractAll = async () => {
-    if (!uploadedFiles.length) return toast.error('Upload images first');
+    if (!uploaded.length) return toast.error('Upload images first');
     setProcessing(true); setProgress(0);
     let combined = '';
-    for (let i = 0; i < uploadedFiles.length; i++) {
-      setProgress(Math.round((i / uploadedFiles.length) * 80));
-      try {
-        const res = await extractText(uploadedFiles[i].filename, 'auto');
-        combined += (i > 0 ? '\n\n' : '') + res.data.text;
-      } catch {}
+    for (let i = 0; i < uploaded.length; i++) {
+      setProgress(Math.round((i / uploaded.length) * 80));
+      try { const r = await extractText(uploaded[i].filename, 'auto'); combined += (i > 0 ? '\n\n' : '') + r.data.text; } catch {}
     }
-    setPreview(combined.trim());
-    setProgress(100);
-    setProcessing(false);
+    setPreview(combined.trim()); setProgress(100); setProcessing(false);
     return combined.trim();
   };
 
-  const handleGeneratePDF = async () => {
-    let content = preview;
-    if (!content) content = await extractAll();
-    if (!content) return toast.error('No text extracted');
+  const handlePDF = async () => {
+    let content = preview || await extractAll();
+    if (!content) return;
     try {
       const res = await generatePDF(title || 'Scanlix Export', content);
       const url = URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
-      Object.assign(document.createElement('a'), { href: url, download: `snaptext-${Date.now()}.pdf` }).click();
+      Object.assign(document.createElement('a'), { href: url, download: `scanlix-${Date.now()}.pdf` }).click();
       URL.revokeObjectURL(url);
       toast.success('PDF downloaded');
-    } catch { toast.error('PDF generation failed'); }
+    } catch { toast.error('PDF failed'); }
   };
 
   const handleDocx = async () => {
-    let content = preview;
-    if (!content) content = await extractAll();
-    if (!content) return toast.error('No text extracted');
+    let content = preview || await extractAll();
+    if (!content) return;
     try { await generateDocx(title || 'Scanlix Export', content); toast.success('DOCX downloaded'); }
     catch { toast.error('DOCX failed'); }
   };
@@ -80,75 +66,61 @@ export default function PDFPage() {
   const handleTxt = () => {
     if (!preview) return toast.error('Extract text first');
     const url = URL.createObjectURL(new Blob([preview], { type: 'text/plain' }));
-    Object.assign(document.createElement('a'), { href: url, download: `snaptext-${Date.now()}.txt` }).click();
+    Object.assign(document.createElement('a'), { href: url, download: `scanlix-${Date.now()}.txt` }).click();
     toast.success('TXT downloaded');
   };
 
   return (
-    <div className="p-4 sm:p-6 flex flex-col gap-4 sm:gap-6 animate-fade-in">
-      <PageHeader
-        icon={FileText}
-        title="Image to PDF"
-        description="Extract text from images and export as PDF, DOCX, or TXT"
-      />
+    <div style={{ padding: 24, maxWidth: 1200, margin: '0 auto' }} className="animate-fade">
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(52,211,153,0.12)', border: '1px solid rgba(52,211,153,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <FileText size={18} color="#34d399" />
+          </div>
+          <div>
+            <h1 style={{ fontSize: 20, fontWeight: 700, color: '#f1f5f9', margin: 0 }}>Image to PDF</h1>
+            <p style={{ fontSize: 13, color: '#64748b', margin: 0 }}>Extract text from images and export as PDF, DOCX or TXT</p>
+          </div>
+        </div>
+      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="flex flex-col gap-4">
-          <div className="card-p flex flex-col gap-4">
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div className="s-card" style={{ padding: 20 }}>
             <ImageUploader onFiles={handleFiles} uploading={uploading} />
-            {uploading && <ProgressBar progress={uploadProgress} label="Uploading" />}
-            <ImagePreview images={localImages} onRemove={handleRemove} onSelect={setSelectedIndex} selectedIndex={selectedIndex} />
+            {uploading && <div style={{ marginTop: 12 }}><ProgressBar progress={upProg} label="Uploading" /></div>}
+            <ImagePreview images={localImgs} onRemove={i => { setLocalImgs(p => p.filter((_,idx) => idx !== i)); setUploaded(p => p.filter((_,idx) => idx !== i)); }} onSelect={setSelIdx} selectedIndex={selIdx} />
           </div>
 
-          <div className="card-p flex flex-col gap-3">
-            <label className="section-label">Document Title (optional)</label>
-            <input
-              type="text"
-              value={title}
-              onChange={e => setTitle(e.target.value)}
-              placeholder="My Document"
-              className="input"
-            />
-            <button onClick={extractAll} disabled={processing || !uploadedFiles.length} className="btn-ghost w-full">
-              {processing ? <Spinner size={14} /> : null}
+          <div className="s-card" style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <p className="s-label">Document Title (optional)</p>
+            <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="My Document" className="s-input" />
+            <button onClick={extractAll} disabled={processing || !uploaded.length} className="s-btn s-btn-ghost" style={{ width: '100%' }}>
+              {processing ? <Spinner size={15} /> : null}
               {processing ? 'Extracting...' : 'Extract Text from Images'}
             </button>
             {processing && <ProgressBar progress={progress} label="Processing" />}
           </div>
 
-          {/* Export buttons */}
-          <div className="grid grid-cols-3 gap-3">
-            {[
-              { label: 'PDF', action: handleGeneratePDF },
-              { label: 'DOCX', action: handleDocx },
-              { label: 'TXT', action: handleTxt },
-            ].map(({ label, action }) => (
-              <button
-                key={label}
-                onClick={action}
-                disabled={processing || !uploadedFiles.length}
-                className="card-p flex flex-col items-center gap-2 py-5 hover:border-brand-blue/40
-                  transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                <Download size={20} className="text-brand-blue" />
-                <span className="text-sm font-medium text-white">{label}</span>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
+            {[{ label: 'PDF', action: handlePDF }, { label: 'DOCX', action: handleDocx }, { label: 'TXT', action: handleTxt }].map(({ label, action }) => (
+              <button key={label} onClick={action} disabled={processing || !uploaded.length} className="s-card"
+                style={{ padding: '20px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, cursor: 'pointer', border: '1px solid #2d3748', transition: 'all 0.15s', opacity: (!uploaded.length || processing) ? 0.4 : 1 }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = '#3b82f6'}
+                onMouseLeave={e => e.currentTarget.style.borderColor = '#2d3748'}>
+                <Download size={20} color="#3b82f6" />
+                <span style={{ fontSize: 13, fontWeight: 600, color: '#e2e8f0' }}>{label}</span>
               </button>
             ))}
           </div>
         </div>
 
-        <div className="card-p flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-slate-300">Text Preview</span>
-            {preview && <span className="badge-cyan">{preview.length} chars</span>}
+        <div className="s-card" style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: 13, fontWeight: 600, color: '#e2e8f0' }}>Text Preview</span>
+            {preview && <span className="s-badge s-badge-blue">{preview.length} chars</span>}
           </div>
-          <textarea
-            value={preview}
-            onChange={e => setPreview(e.target.value)}
-            rows={20}
-            placeholder="Extracted text preview will appear here..."
-            className="textarea flex-1"
-          />
+          <textarea value={preview} onChange={e => setPreview(e.target.value)} className="s-textarea" rows={22} placeholder="Extracted text preview will appear here..." />
         </div>
       </div>
     </div>
