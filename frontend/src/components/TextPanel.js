@@ -3,11 +3,11 @@ import CopyButton from './CopyButton';
 
 export default function TextPanel({ label, value, onChange, readOnly = false, rows = 12, placeholder, badge }) {
   return (
-    <div className="flex flex-col gap-2 h-full">
+    <div className="flex flex-col gap-2.5 h-full">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-slate-300">{label}</span>
-          {badge && <span className="badge-purple">{badge}</span>}
+          <span className="text-sm font-semibold text-slate-200">{label}</span>
+          {badge && <span className="badge-purple text-xs">{badge}</span>}
         </div>
         <CopyButton text={value} />
       </div>
